@@ -27,6 +27,3 @@ ton_sdk = { git = 'https://github.com/tonlabs/TON-SDK.git', default-features = f
 [dev-dependencies]
 assert_cmd = "0.11"
 predicates = "1"
-
-[patch.crates-io]
-ton-client-rs = { git = 'https://github.com/tonlabs/ton-client-rs.git', branch = '0.21.0-rc' }
