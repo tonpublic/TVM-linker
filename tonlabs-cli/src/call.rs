@@ -16,8 +16,37 @@ use std::time::Duration;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use crate::config::Config;
+use crate::crypto::generate_keypair_from_mnemonic;
 use crate::helpers::read_keys;
-use ton_client_rs::{TonClient, TonAddress};
+use ton_client_rs::{TonClient, TonAddress, Ed25519KeyPair};
+use hex;
+
+fn load_keypair(keys: Option<String>) -> Result<Option<Ed25519KeyPair>, String> {
+    match keys {
+        Some(keys) => {
+            let words: Vec<&str> = keys.split(' ').collect();
+            if words.len() == 0 {
+                let keys = read_keys(&keys)?;
+                Ok(Some(keys))
+            } else {
+                let pair = generate_keypair_from_mnemonic(&keys)?;
+
+                let mut buffer = [0u8; 64];
+                let public_vec = hex::decode(&pair.public)
+                    .map_err(|e| format!("failed to decode public key: {}", e))?;
+                let private_vec = hex::decode(&pair.public)
+                    .map_err(|e| format!("failed to decode private key: {}", e))?;
+                
+                buffer[..32].copy_from_slice(&private_vec);
+                buffer[32..].copy_from_slice(&public_vec);
+
+                let ed25519pair = Ed25519KeyPair::zero();
+                Ok(Some(ed25519pair.from_bytes(buffer)))
+            }
+        },
+        None => Ok(None),
+    }
+}
 
 pub fn call_contract(
     conf: Config,
@@ -25,7 +54,7 @@ pub fn call_contract(
     abi: &str,
     method: &str,
     params: &str,
-    keys_file: Option<String>,
+    keys: Option<String>,
     local: bool,
 ) -> Result<(), String> {
     let ton = TonClient::new_with_base_url(&conf.url)
@@ -34,10 +63,7 @@ pub fn call_contract(
     let abi = std::fs::read_to_string(abi)
         .map_err(|e| format!("failed to read ABI file: {}", e.to_string()))?;
     
-    let keys = match keys_file {
-        Some(filename) => Some(read_keys(&filename)?),
-        None => None,
-    };
+    let keys = load_keypair(keys)?;
     
     let ton_addr = TonAddress::from_str(addr)
         .map_err(|e| format!("failed to parse address: {}", e.to_string()))?;

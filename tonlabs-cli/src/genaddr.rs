@@ -22,7 +22,7 @@ use std::fs::OpenOptions;
 use ton_sdk;
 
 pub fn generate_address(
-    conf: Config,
+    _conf: Config,
     tvc: &str,
     abi: &str,
     wc_str: Option<&str>,
@@ -31,9 +31,9 @@ pub fn generate_address(
     initial_data: Option<&str>,
     update_tvc: bool,
 ) -> Result<(), String> {
-    let ton = TonClient::new_with_base_url(&conf.url)
+    let ton = TonClient::default()
         .map_err(|e| format!("failed to create tonclient: {}", e.to_string()))?;
-    
+    println!("client created" );
     let contract = std::fs::read(tvc)
         .map_err(|e| format!("failed to read smart contract file: {}", e.to_string()))?;
 
