@@ -110,7 +110,7 @@ pub fn call_contract(
             Ok(val) => {
               println!("Succeded.");
               if !val.is_null() {
-                   println!("Result = {}", val);
+                   println!("Result: {}", serde_json::to_string_pretty(&val).unwrap());
               }
             },
             Err(estr) => { println!("Error: {}", estr); }

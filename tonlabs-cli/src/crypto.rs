@@ -80,11 +80,11 @@ impl Drop for TestClient {
 }
 
 fn parse_string(r: String) -> Result<String, String> {
-    let json = serde_json::from_str(&r).map_err(|e| format!("failed to parse client result: {}", e))?;
+    let json = serde_json::from_str(&r).map_err(|e| format!("failed to parse sdk client result: {}", e))?;
     if let Value::String(s) = json {
         Ok(s)
     } else {
-        Err("String expected".to_string())
+        Err("failed to parse sdk client result: string expected".to_string())
     }
 }
 
@@ -143,16 +143,14 @@ pub fn generate_keypair_from_mnemonic(mnemonic: &str) -> Result<KeyPair, String>
 
 pub fn generate_mnemonic() -> Result<(), String> {
     let mnemonic = gen_seed_phrase()?;
-    println!("Succeeded");
-    println!("Seed phrase:");
-    println!("{}", mnemonic);
+    println!("Succeeded.");
+    println!("Seed phrase: {}", mnemonic);
     Ok(())
 }
 
 pub fn extract_pubkey(mnemonic: &str) -> Result<(), String> {
     let keypair = generate_keypair_from_mnemonic(mnemonic)?;
-
-    println!("Succeeded");
+    println!("Succeeded.");
     println!("Public key: {}", keypair.public);
     Ok(())
 }
