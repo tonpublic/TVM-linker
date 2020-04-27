@@ -144,7 +144,7 @@ pub fn generate_keypair_from_mnemonic(mnemonic: &str) -> Result<KeyPair, String>
 pub fn generate_mnemonic() -> Result<(), String> {
     let mnemonic = gen_seed_phrase()?;
     println!("Succeeded.");
-    println!("Seed phrase: {}", mnemonic);
+    println!(r#"Seed phrase: "{}""#, mnemonic);
     Ok(())
 }
 
