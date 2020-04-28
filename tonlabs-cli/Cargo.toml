@@ -22,9 +22,10 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde_derive = "1.0.91"
 
-ton-client-rs = "0.21.0"
-ton_sdk = { git = 'https://github.com/tonlabs/TON-SDK.git', default-features = false }
-ton_client = { git = 'https://github.com/tonlabs/TON-SDK.git',  default_features = false, features = ["node_interaction"]}
+#ton-client-rs = "0.21.0"
+ton-client-rs = { git = 'https://github.com/tonlabs/ton-client-rs.git', default-features = false, branch = "0.23.0-rc" }
+ton_sdk = { git = 'https://github.com/tonlabs/TON-SDK.git', default-features = false, branch = "0.21.200-rc" }
+ton_client = { git = 'https://github.com/tonlabs/TON-SDK.git',  default_features = false, features = ["node_interaction"], branch = "0.21.200-rc" }
 
 [dev-dependencies]
 assert_cmd = "0.11"

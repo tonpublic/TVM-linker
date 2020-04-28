@@ -208,8 +208,12 @@ fn send_command(matches: &ArgMatches, config: Config) -> Result<(), String> {
     let keys = matches.value_of("SIGN")
         .map(|s| s.to_string())
         .or(config.keys_path.clone());
+
     print_args!(matches, address, method, params, abi, keys);
-    call_contract(config, address.unwrap(), &abi.unwrap(), method.unwrap(), params.unwrap(), keys, false)
+
+    let abi = std::fs::read_to_string(abi.unwrap())
+        .map_err(|e| format!("failed to read ABI file: {}", e.to_string()))?;
+    call_contract(config, address.unwrap(), abi, method.unwrap(), params.unwrap(), keys, false)
 }
 
 fn run_command(matches: &ArgMatches, config: Config) -> Result<(), String> {
@@ -224,7 +228,11 @@ fn run_command(matches: &ArgMatches, config: Config) -> Result<(), String> {
     );
     let keys: Option<String> = None;
     print_args!(matches, address, method, params, abi, keys);
-    call_contract(config, address.unwrap(), &abi.unwrap(), method.unwrap(), params.unwrap(), keys, true)
+
+    let abi = std::fs::read_to_string(abi.unwrap())
+        .map_err(|e| format!("failed to read ABI file: {}", e.to_string()))?;
+
+    call_contract(config, address.unwrap(), abi, method.unwrap(), params.unwrap(), keys, true)
 }
 
 fn deploy_command(matches: &ArgMatches, config: Config) -> Result<(), String> {
