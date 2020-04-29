@@ -219,7 +219,7 @@ pub fn call_contract(
 }
 
 pub fn generate_message(
-    conf: Config,
+    _conf: Config,
     addr: &str,
     abi: String,
     method: &str,
@@ -227,7 +227,8 @@ pub fn generate_message(
     keys: Option<String>,
     lifetime: u32,
 ) -> Result<(), String> {
-    let ton = create_client(conf.url.clone())?;
+    let ton = TonClient::default()
+        .map_err(|e| format!("failed to create tonclient: {}", e.to_string()))?;
 
     let ton_addr = TonAddress::from_str(addr)
         .map_err(|e| format!("failed to parse address: {}", e.to_string()))?;
